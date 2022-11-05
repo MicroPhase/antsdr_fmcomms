@@ -17,11 +17,11 @@ TOOLCHAIN_PATH = $(shell dirname $(TOOLCHAIN2))
 
 NCORES = $(shell grep -c ^processor /proc/cpuinfo)
 VIVADO_SETTINGS ?= /opt/Xilinx/Vivado/$(VIVADO_VERSION)/settings64.sh
-VSUBDIRS = hdl buildroot linux u-boot-xlnx
+VSUBDIRS = hdl buildroot linux u-boot
 
 VERSION=$(shell git describe --abbrev=4 --dirty --always --tags)
 LATEST_TAG=$(shell git describe --abbrev=0 --tags)
-UBOOT_VERSION=$(shell echo -n "ANTSDR " && cd u-boot-xlnx && git describe --abbrev=0 --dirty --always --tags)
+UBOOT_VERSION=$(shell echo -n "ANTSDR " && cd u-boot && git describe --abbrev=0 --dirty --always --tags)
 HAVE_VIVADO= $(shell bash -c "source $(VIVADO_SETTINGS) > /dev/null 2>&1 && vivado -version > /dev/null 2>&1 && echo 1 || echo 0")
 
 ifeq (1, ${HAVE_VIVADO})
@@ -38,7 +38,7 @@ endif
 TARGET ?= ant
 SUPPORTED_TARGETS:=pluto sidekiqz2 ant antsdre200
 
-all : build	build/uImage build/device_tree.dtb build/BOOT.bin
+all : build	build/uImage build/devicetree.dtb build/BOOT.bin
 
 build:
 	mkdir -p $@
@@ -50,14 +50,14 @@ build:
 
 ### u-boot ###
 
-u-boot-xlnx/u-boot u-boot-xlnx/tools/mkimage:
-	make -C u-boot-xlnx ARCH=arm zynq_$(TARGET)_defconfig
-	make -C u-boot-xlnx ARCH=arm CROSS_COMPILE=$(CROSS_COMPILE) UBOOTVERSION="$(UBOOT_VERSION)"
+u-boot/u-boot u-boot/tools/mkimage:
+	make -C u-boot ARCH=arm zynq_$(TARGET)_defconfig
+	make -C u-boot ARCH=arm CROSS_COMPILE=$(CROSS_COMPILE) UBOOTVERSION="$(UBOOT_VERSION)"
 
 
-.PHONY: u-boot-xlnx/u-boot
+.PHONY: u-boot/u-boot
 
-build/u-boot.elf: u-boot-xlnx/u-boot | build
+build/u-boot.elf: u-boot/u-boot | build
 	cp $< $@
 
 
@@ -78,7 +78,7 @@ linux/arch/arm/boot/dts/%.dtb: linux/arch/arm/boot/dts/%.dts  linux/arch/arm/boo
 	make -C linux -j $(NCORES) ARCH=arm CROSS_COMPILE=$(CROSS_COMPILE) $(notdir $@)
 
 
-build/devicetree.dtb: linux/arch/arm/boot/dts/%.dtb | build
+build/devicetree.dtb: linux/arch/arm/boot/dts/zynq-$(TARGET).dtb | build
 	cp $< $@
 
 
