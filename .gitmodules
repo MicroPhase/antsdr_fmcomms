@@ -1,9 +1,12 @@
 [submodule "linux"]
 	path = linux
 	url = https://github.com/MicroPhase/linux.git
+	branch = antsdr_fmcomms
 [submodule "u-boot"]
 	path = u-boot
 	url = https://github.com/MicroPhase/u-boot-xlnx.git
+	branch = antsdr
 [submodule "hdl"]
 	path = hdl
 	url = https://github.com/MicroPhase/hdl.git
+	branch = antsdr_fmcomms
