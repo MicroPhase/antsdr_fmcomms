@@ -36,7 +36,7 @@ $(error "      3] export VIVADO_VERSION=v20xx.x")
 endif
 
 TARGET ?= ant
-SUPPORTED_TARGETS:=pluto sidekiqz2 ant antsdre200
+SUPPORTED_TARGETS:=pluto sidekiqz2 ant antsdre200 e310v2
 
 all : build	build/uImage build/devicetree.dtb build/BOOT.bin
 
