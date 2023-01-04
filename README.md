@@ -11,7 +11,7 @@ This repo contains the kernel boot file for fmcomms compatible image for antsdr 
   ```bash
   dd if=/path/to/your/kuiper_image.img of=/dev/sdb bs=2M
   ```
-  There will be a BOOT partition and rootfs partition once the sd card is burned into the sd card.
+  There will be a BOOT partition and rootfs partition once the sd card image is burned into the sd card.
 
 - Step 3
   
@@ -28,7 +28,7 @@ This repo contains the kernel boot file for fmcomms compatible image for antsdr 
 
     - Get source code and setup bash
     ```bash
-        git clone --recursive https://github.com/MicroPhase/antsdr_fmcomms.git
+        git clone -b 2019_r2 --recursive https://github.com/MicroPhase/antsdr_fmcomms.git
         export CROSS_COMPILE=arm-linux-gnueabihf- 
         export PATH=$PATH:/opt/Xilinx/SDK/2019.1/gnu/aarch32/lin/gcc-arm-linux-gnueabi/bin 
         export VIVADO_SETTINGS=/opt/Xilinx/Vivado/2019.1/settings64.sh
