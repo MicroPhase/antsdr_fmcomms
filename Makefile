@@ -1,4 +1,4 @@
-VIVADO_VERSION ?= 2019.1
+VIVADO_VERSION ?= 2021.1
 CROSS_COMPILE ?= arm-linux-gnueabihf-
 
 HAVE_CROSS=$(shell which $(CROSS_COMPILE)gcc | wc -l)
@@ -35,10 +35,10 @@ $(error "      3] export VIVADO_VERSION=v20xx.x")
 	endif
 endif
 
-TARGET ?= ant
-SUPPORTED_TARGETS:=pluto sidekiqz2 ant antsdre200 e310v2
+TARGET ?= antsdre200
+SUPPORTED_TARGETS:=pluto sidekiqz2 antsdre310 antsdre200 e310v2
 
-all : build	build/uImage build/devicetree.dtb build/BOOT.bin
+all : clean-build build	build/uImage build/devicetree.dtb build/BOOT.bin
 
 build:
 	mkdir -p $@
@@ -82,24 +82,20 @@ build/devicetree.dtb: linux/arch/arm/boot/dts/zynq-$(TARGET).dtb | build
 	cp $< $@
 
 
-build/system_top.hdf:  | build
+build/system_top.xsa:  | build
 
-	bash -c "source $(VIVADO_SETTINGS) && make -C hdl/projects/$(TARGET) && cp hdl/projects/$(TARGET)/$(TARGET).sdk/system_top.hdf $@"
+	bash -c "source $(VIVADO_SETTINGS) && make -C hdl/projects/$(TARGET) && cp hdl/projects/$(TARGET)/$(TARGET).sdk/system_top.xsa $@"
 	unzip -l $@ | grep -q ps7_init || cp hdl/projects/$(TARGET)/$(TARGET).srcs/sources_1/bd/system/ip/system_sys_ps7_0/ps7_init* build/
 
-### TODO: Build system_top.hdf from src if dl fails - need 2016.2 for that ...
 
-build/sdk/fsbl/Release/fsbl.elf build/sdk/hw_0/system_top.bit : build/system_top.hdf
+build/sdk/fsbl/Release/fsbl.elf build/system_top.bit : build/system_top.xsa
 	rm -Rf build/sdk
 ifeq (1, ${HAVE_VIVADO})
-	bash -c "source $(VIVADO_SETTINGS) && xsdk -batch -source scripts/create_fsbl_project.tcl"
+	bash -c "source $(VIVADO_SETTINGS) && xsct scripts/create_fsbl_project.tcl"
 else
-	mkdir -p build/sdk/hw_0
-	unzip -o build/system_top.hdf system_top.bit -d build/sdk/hw_0
+	unzip -o build/system_top.xsa system_top.bit -d build/
 endif
 
-build/system_top.bit: build/sdk/hw_0/system_top.bit
-	cp $< $@
 
 build/BOOT.bin: build/sdk/fsbl/Release/fsbl.elf build/system_top.bit build/u-boot.elf
 	@echo img:{[bootloader] $^ } > build/boot.bif
