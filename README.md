@@ -1,9 +1,12 @@
 # antsdr_fmcomms
 This repo contains the kernel boot file for fmcomms compatible image for antsdr devices.
 
+If you are using vivado 2019.1 you can switch to [tag_2019_r2](https://github.com/MicroPhase/antsdr_fmcomms/tree/2019_r2) for build information.
+
 - Step 1
   
-  Download the prebuild image from ADI [Kuiper_2019_R2](https://swdownloads.analog.com/cse/kuiper/image_2021-07-28-ADI-Kuiper-full.zip).
+  Download the prebuild image from ADI [Kuiper_2021_r1](https://swdownloads.analog.com/cse/kuiper/image_2022-08-04-ADI-Kuiper-full.zip).
+  This is the prebuild image, if you want to build the rootfs from source, you can find information from [adi-kuiper-gen](https://github.com/analogdevicesinc/adi-kuiper-gen).
 
 - Step 2 
   
@@ -28,10 +31,10 @@ This repo contains the kernel boot file for fmcomms compatible image for antsdr 
 
     - Get source code and setup bash
     ```bash
-        git clone -b 2019_r2 --recursive https://github.com/MicroPhase/antsdr_fmcomms.git
+        git clone --recursive https://github.com/MicroPhase/antsdr_fmcomms.git
         export CROSS_COMPILE=arm-linux-gnueabihf- 
-        export PATH=$PATH:/opt/Xilinx/SDK/2019.1/gnu/aarch32/lin/gcc-arm-linux-gnueabi/bin 
-        export VIVADO_SETTINGS=/opt/Xilinx/Vivado/2019.1/settings64.sh
+        export PATH=$PATH:/opt/Xilinx/Vitis/2021.1/gnu/aarch32/lin/gcc-arm-linux-gnueabi/bin
+        export VIVADO_SETTINGS=/opt/Xilinx/Vivado/2021.1/settings64.sh
     ``` 
 
     - Choose your devices
@@ -51,7 +54,9 @@ This repo contains the kernel boot file for fmcomms compatible image for antsdr 
 
 - Step 4 
   
-  now you can copy the BOOT.bin, devicetree.dtb, uImage into the the BOOT partition of SD card.
+  now you can copy the **BOOT.bin**, **devicetree.dtb**, **uImage** into the the BOOT partition of SD card.
   Then you can insert the SD card into the slot of the device.
 
-
+## Related links
+[antsdr-fw](https://github.com/MicroPhase/antsdr-fw-patch)
+[antsdr_uhd](https://github.com/MicroPhase/antsdr_uhd)
